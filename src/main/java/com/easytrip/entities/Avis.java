@@ -2,7 +2,7 @@ package com.easytrip.entities;
 
 import java.util.Date;
 
-public class Avis {
+public class Avis  {
 
     private int id_avis;
     private int id_user;
@@ -11,16 +11,27 @@ public class Avis {
     private String description;
     private int note;
 
+    // Vous pouvez juste ajouter cette méthode dans la classe Avis pour l'affichage
+    private String type;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public Avis() {
     }
 
-    /* public Avis(int id_user, int id_reservation, Date date_avis, String description, int note) {
+    public Avis(int id_user, int id_reservation, Date date_avis, String description, int note) {
         this.id_user = id_user;
         this.id_reservation = id_reservation;
         this.date_avis = date_avis;
         this.description = description;
         this.note = note;
-    } */
+    }
 
     public int getId_avis() {
         return id_avis;

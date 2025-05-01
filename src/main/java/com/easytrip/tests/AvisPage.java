@@ -24,10 +24,14 @@ public class AvisPage extends Application {
             primaryStage.show();
 
 
+
         } catch (IOException e) {
             System.out.println(e.getMessage());
             }
         }
+
+
+
 
 
 

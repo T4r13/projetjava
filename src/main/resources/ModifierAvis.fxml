@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="500.0" prefWidth="735.0" style="-fx-background-color: linear-gradient(to bottom right,#e3f2fd, #bbdefb);" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.easytrip.controllers.ModifierAvisController">
+
+    <VBox alignment="TOP_CENTER" layoutX="30" layoutY="20" prefHeight="374.0" prefWidth="650.0" spacing="20" AnchorPane.leftAnchor="30" AnchorPane.topAnchor="20">
+
+        <!-- Titre -->
+        <Label style="-fx-font-size: 24px; -fx-text-fill: #2196F3; -fx-font-weight: bold;" text="Modifier un Avis" />
+
+        <!-- Date d'avis (non modifiable) -->
+        <HBox alignment="CENTER_LEFT" spacing="12">
+            <Label minWidth="120" style="-fx-font-size: 14px; -fx-text-fill: #2c3e50; -fx-font-weight: bold;" text="Date d'avis :" />
+            <TextField fx:id="dateField" editable="false" promptText="2025-04-30" style="-fx-background-color: white; -fx-border-color: #d0d7de; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 6 8; -fx-font-size: 13px;" />
+        </HBox>
+
+        <!-- Note Slider -->
+        <HBox alignment="CENTER_LEFT" prefHeight="58.0" prefWidth="480.0" spacing="12">
+            <Label minWidth="120" style="-fx-font-size: 14px; -fx-text-fill: #2c3e50; -fx-font-weight: bold;" text="Note :" />
+            <VBox spacing="6">
+                <Slider fx:id="noteSlider" blockIncrement="1" majorTickUnit="1" max="5" min="1" minorTickCount="0" prefHeight="26.0" prefWidth="534.0" showTickLabels="false" showTickMarks="true" snapToTicks="true" style="-fx-pref-width: 250px;" value="3" />
+                <Label fx:id="etoilesLabel" prefHeight="26.0" prefWidth="294.0" style="-fx-font-size: 16px; -fx-text-fill: #ffb400;" text="⭐⭐⭐" textAlignment="CENTER" textFill="#5db415">
+                    <font>
+                        <Font size="24.0" />
+                    </font>
+                </Label>
+            </VBox>
+        </HBox>
+
+        <!-- Description -->
+        <HBox alignment="TOP_LEFT" spacing="12">
+            <Label alignment="TOP_LEFT" minWidth="120" style="-fx-font-size: 14px; -fx-text-fill: #2c3e50; -fx-font-weight: bold;" text="Description :" />
+            <TextArea fx:id="descriptionArea" prefHeight="124.0" prefRowCount="5" prefWidth="446.0" promptText="Écrivez votre avis ici..." style="-fx-background-color: white; -fx-border-color: #d0d7de; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 6 8; -fx-font-size: 13px;" wrapText="true" />
+        </HBox>
+
+    </VBox>
+
+    <!-- Boutons -->
+    <Button layoutX="479.0" layoutY="401.0" onAction="#annuler" style="-fx-background-color: #90a4ae; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 20; -fx-padding: 8 16;" text="Annuler" />
+    <Button layoutX="577.0" layoutY="401.0" onAction="#modifier" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 20; -fx-padding: 8 16;" text="Modifier" />
+</AnchorPane>

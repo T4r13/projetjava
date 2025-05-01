@@ -1,14 +1,18 @@
 package com.easytrip.controllers;
 
+import java.io.IOException;
 import java.net.URL;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ResourceBundle;
+
+import com.easytrip.entities.Avis;
+import com.easytrip.services.AvisService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextArea;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.control.*;
 
 public class AjouterAvisController {
 
@@ -19,58 +23,81 @@ public class AjouterAvisController {
     private URL location;
 
     @FXML
-    private Button btn_ajouter;
+    private TextField dateField;
 
     @FXML
-    private Button btn_annuler;
+    private TextArea descriptionArea;
 
     @FXML
-    private DatePicker id_date;
+    private Label etoilesLabel;
 
     @FXML
-    private TextArea id_description;
-
-    @FXML
-    private ComboBox<?> id_reservation;
-
-    @FXML
-    private RadioButton note_1;
-
-    @FXML
-    private RadioButton note_2;
-
-    @FXML
-    private RadioButton note_3;
-
-    @FXML
-    private RadioButton note_4;
-
-    @FXML
-    private RadioButton note_5;
+    private Slider noteSlider;
 
     @FXML
     void ajouter(ActionEvent event) {
+        try {
+            // ID statiques temporairement
+            int id_user = 1;
+            int id_reservation = 1;
 
+            // Récupération des valeurs
+            LocalDate dateAvis = LocalDate.parse(dateField.getText());
+            int note = (int) noteSlider.getValue();
+            String description = descriptionArea.getText();
+
+            // Création de l’objet Avis
+            Avis avis = new Avis(id_user, id_reservation, Date.valueOf(dateAvis), description, note);
+
+            // Insertion dans la base
+            AvisService avisService = new AvisService();
+            avisService.ajouterEntity(avis);
+
+            // Affichage du message de succès
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Succès");
+            alert.setHeaderText(null);
+            alert.setContentText("Avis ajouté avec succès !");
+            alert.showAndWait();  // Attendre la fermeture
+
+            // Redirection vers afficherAvis.fxml
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherAvis.fxml"));
+            Parent root = loader.load();
+            dateField.getScene().setRoot(root);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur de navigation");
+            alert.setHeaderText("Impossible de charger la page d'affichage des avis.");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText("Erreur lors de l'ajout");
+            alert.setContentText("Veuillez vérifier vos données.");
+            alert.showAndWait();
+        }
     }
 
     @FXML
-    void annulerAjout(ActionEvent event) {
+    void annuler(ActionEvent event) {
 
     }
 
     @FXML
     void initialize() {
-        assert btn_ajouter != null : "fx:id=\"btn_ajouter\" was not injected: check your FXML file 'AjouterAvis.fxml'.";
-        assert btn_annuler != null : "fx:id=\"btn_annuler\" was not injected: check your FXML file 'AjouterAvis.fxml'.";
-        assert id_date != null : "fx:id=\"id_date\" was not injected: check your FXML file 'AjouterAvis.fxml'.";
-        assert id_description != null : "fx:id=\"id_description\" was not injected: check your FXML file 'AjouterAvis.fxml'.";
-        assert id_reservation != null : "fx:id=\"id_reservation\" was not injected: check your FXML file 'AjouterAvis.fxml'.";
-        assert note_1 != null : "fx:id=\"note_1\" was not injected: check your FXML file 'AjouterAvis.fxml'.";
-        assert note_2 != null : "fx:id=\"note_2\" was not injected: check your FXML file 'AjouterAvis.fxml'.";
-        assert note_3 != null : "fx:id=\"note_3\" was not injected: check your FXML file 'AjouterAvis.fxml'.";
-        assert note_4 != null : "fx:id=\"note_4\" was not injected: check your FXML file 'AjouterAvis.fxml'.";
-        assert note_5 != null : "fx:id=\"note_5\" was not injected: check your FXML file 'AjouterAvis.fxml'.";
+        // Affichage dynamique des étoiles
+        noteSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            int val = newVal.intValue();
+            etoilesLabel.setText("⭐".repeat(val));
+        });
 
+        // Initialiser la date à aujourd’hui
+        dateField.setText(LocalDate.now().toString());
+        dateField.setEditable(false);
     }
 
 }

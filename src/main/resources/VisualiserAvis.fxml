@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="500.0" prefWidth="735.0"
+            style="-fx-background-color: linear-gradient(to bottom right,#e3f2fd, #bbdefb);"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.easytrip.controllers.VisualiserAvisController">
+
+    <VBox layoutX="30" layoutY="20" prefWidth="650.0" spacing="20" AnchorPane.leftAnchor="30" AnchorPane.topAnchor="20">
+
+        <!-- Titre -->
+        <Label text="Détails de l'Avis"
+               style="-fx-font-size: 24px; -fx-text-fill: #2196F3; -fx-font-weight: bold;" />
+
+        <!-- Détails -->
+        <GridPane hgap="10" vgap="12">
+            <Label text="ID Avis :" style="-fx-font-size: 14px; -fx-text-fill: #2c3e50; -fx-font-weight: bold;" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <Label fx:id="lblId" style="-fx-font-size: 14px;" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+            <Label text="Votre ID :" style="-fx-font-size: 14px; -fx-text-fill: #2c3e50; -fx-font-weight: bold;" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <Label fx:id="lblUser" style="-fx-font-size: 14px;" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+            <Label text="Type de Réservation :" style="-fx-font-size: 14px; -fx-text-fill: #2c3e50; -fx-font-weight: bold;" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+            <Label fx:id="lblReservation" style="-fx-font-size: 14px;" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+            <Label text="Date de l'avis :" style="-fx-font-size: 14px; -fx-text-fill: #2c3e50; -fx-font-weight: bold;" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+            <Label fx:id="lblDate" style="-fx-font-size: 14px;" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+            <Label text="Note :" style="-fx-font-size: 14px; -fx-text-fill: #2c3e50; -fx-font-weight: bold;" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+            <Label fx:id="lblNote" style="-fx-font-size: 14px; -fx-text-fill: #ffb400;" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+        </GridPane>
+
+        <!-- Description -->
+        <HBox alignment="TOP_LEFT" spacing="12">
+            <Label text="Description :" minWidth="120"
+                   style="-fx-font-size: 14px; -fx-text-fill: #2c3e50; -fx-font-weight: bold;" />
+            <TextArea fx:id="txtDescription" editable="false" wrapText="true"
+                      prefHeight="124.0" prefWidth="446.0"
+                      style="-fx-background-color: white; -fx-border-color: #d0d7de; -fx-border-radius: 6;
+                             -fx-background-radius: 6; -fx-padding: 6 8; -fx-font-size: 13px;" />
+        </HBox>
+
+    </VBox>
+
+    <!-- Bouton Fermer -->
+    <Button layoutX="600.0" layoutY="440.0" onAction="#handleClose"
+            text="Fermer"
+            style="-fx-background-color: #90a4ae; -fx-text-fill: white; -fx-font-size: 14px;
+                   -fx-background-radius: 20; -fx-padding: 8 16;" />
+</AnchorPane>
