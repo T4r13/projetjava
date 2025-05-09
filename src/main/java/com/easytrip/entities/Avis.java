@@ -10,6 +10,32 @@ public class Avis  {
     private Date date_avis;
     private String description;
     private int note;
+    private String nomUtilisateur;
+    private String prenomUtilisateur;
+    private String emailUtilisateur;
+
+    public String getPrenomUtilisateur() {
+        return prenomUtilisateur;
+    }
+
+    public void setPrenomUtilisateur(String prenomUtilisateur) {
+        this.prenomUtilisateur = prenomUtilisateur;
+    }
+
+    public String getNomUtilisateur() {
+        return nomUtilisateur;
+    }
+
+    public void setNomUtilisateur(String nomUtilisateur) {
+        this.nomUtilisateur = nomUtilisateur;
+    }
+    public String getEmailUtilisateur() {
+        return emailUtilisateur;
+    }
+    public void setEmailUtilisateur(String emailUtilisateur) {
+        this.emailUtilisateur = emailUtilisateur;
+    }
+
 
     // Vous pouvez juste ajouter cette méthode dans la classe Avis pour l'affichage
     private String type;

@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.control.TextField?>
 <AnchorPane prefHeight="500.0" prefWidth="735.0" style="-fx-background-color: linear-gradient(to bottom right, #bbdefb,#e3f2fd);" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.easytrip.controllers.AfficherAvisController">
 
     <VBox spacing="20" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.bottomAnchor="20">
@@ -16,13 +17,15 @@
         <!-- Ligne de haut : Bouton gauche - Label centre - Bouton droit -->
         <BorderPane>
             <left>
-                <Button text="Accueil" style="-fx-background-color: #1976D2; -fx-text-fill: white; -fx-font-weight: bold;" />
+                <Button text="Retour" style="-fx-background-color: #1976D2; -fx-text-fill: white; -fx-font-weight: bold;" />
             </left>
             <center>
                 <Label style="-fx-font-size: 24px; -fx-text-fill: #2196F3; -fx-font-weight: bold;" text="Liste des Avis" />
             </center>
 
         </BorderPane>
+        <!-- Barre de recherche -->
+        <TextField fx:id="searchField" promptText="Rechercher par description , type ou la date..." style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #2196F3;" />
 
         <!-- Table des avis -->
         <TreeTableView fx:id="avisTreeTable" prefHeight="400" showRoot="false" style="-fx-background-color: white; -fx-border-radius: 8; -fx-background-radius: 8;">

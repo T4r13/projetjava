@@ -18,7 +18,9 @@ public class AvisPage extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/AjouterAvis.fxml"));
+            //Parent root = FXMLLoader.load(getClass().getResource("/AjouterAvis.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/VisualisertoutlesAvis.fxml"));
+
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
             primaryStage.show();
@@ -31,7 +33,11 @@ public class AvisPage extends Application {
         }
 
 
-
+/*  controle saisie 3al decription
+    metier : bad words fe desciption
+    api : notification par sms
+    nkhamem na3ml tree par la note
+ */
 
 
 

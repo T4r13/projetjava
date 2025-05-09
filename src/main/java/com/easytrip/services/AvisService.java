@@ -86,4 +86,41 @@ public class AvisService implements IService<Avis> {
         }
         return avisList;
     }
+
+
+    public List<Avis> getAllAvisWithUserInfo() {
+        List<Avis> avisList = new ArrayList<>();
+        try {
+            String req = """
+        SELECT a.*, u.full_name, u.email_user, u.user_name
+        FROM avis a
+        JOIN user u ON a.id_user = u.id_user
+        """;
+
+            PreparedStatement pst = MyConnection.getInstance().getCnx().prepareStatement(req);
+            ResultSet rs = pst.executeQuery();
+
+            while (rs.next()) {
+                Avis a = new Avis();
+                a.setId_avis(rs.getInt("id_avis"));
+                a.setId_user(rs.getInt("id_user"));
+                a.setId_reservation(rs.getInt("id_reservation"));
+                a.setDate_avis(rs.getDate("date_avis"));
+                a.setDescription(rs.getString("description"));
+                a.setNote(rs.getInt("note"));
+
+                a.setNomUtilisateur(rs.getString("full_name"));
+                a.setPrenomUtilisateur(rs.getString("user_name")); // ← correspond au champ disponible dans `user`
+                a.setEmailUtilisateur(rs.getString("email_user"));
+
+                avisList.add(a);
+            }
+        } catch (SQLException e) {
+            System.out.println("❌ Erreur jointure avis-utilisateur : " + e.getMessage());
+        }
+        return avisList;
+    }
+
+
+
 }

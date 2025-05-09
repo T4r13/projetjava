@@ -1,27 +1,31 @@
 package com.easytrip.controllers;
 
-import java.io.IOException;
-import java.net.URL;
-import java.sql.*;
-import java.util.Optional;
-import java.util.ResourceBundle;
-
 import com.easytrip.entities.Avis;
 import com.easytrip.services.AvisService;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import com.jfoenix.controls.RecursiveTreeItem;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
-import com.jfoenix.controls.RecursiveTreeItem;
-
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.stage.Stage;
+
+import java.io.IOException;
+import java.net.URL;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Optional;
+import java.util.ResourceBundle;
 
 public class AfficherAvisController {
 
@@ -50,12 +54,27 @@ public class AfficherAvisController {
     private TreeTableColumn<AvisWithType, String> colReservation;
 
     @FXML
-    private TreeTableColumn<AvisWithType, String> colAction;  // Ajouter la colonne Action
+    private TreeTableColumn<AvisWithType, String> colAction;
+
+    @FXML
+    private TextField searchField;
+
+    private ObservableList<AvisWithType> avisList;
+    private FilteredList<AvisWithType> filteredAvisList;
+
+    // Classe interne auxiliaire pour stocker le type de réservation
+    public static class AvisWithType extends RecursiveTreeObject<AvisWithType> {
+        Avis avis;
+        String type;
+
+        AvisWithType(Avis avis, String type) {
+            this.avis = avis;
+            this.type = type;
+        }
+    }
 
     @FXML
     void initialize() {
-
-
         // Liens des colonnes avec les propriétés d'AvisWithType
         colId.setCellValueFactory(param -> new SimpleIntegerProperty(param.getValue().getValue().avis.getId_avis()));
         colNote.setCellValueFactory(param -> new SimpleIntegerProperty(param.getValue().getValue().avis.getNote()));
@@ -91,25 +110,37 @@ public class AfficherAvisController {
                     // Mettre les boutons dans la cellule
                     setGraphic(hbox);
                 }
-
             }
         });
 
-        // Charger les données dans le TreeTableView
-        TreeItem<AvisWithType> root = new RecursiveTreeItem<>(loadAvisWithTypes(), RecursiveTreeObject::getChildren);
+        // Charger les données dans le TreeTableView avec filtrage
+        avisList = loadAvisWithTypes();
+        filteredAvisList = new FilteredList<>(avisList, p -> true);
+
+        // Configurer l'écouteur pour la barre de recherche
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredAvisList.setPredicate(avisWithType -> {
+                if (newValue == null || newValue.trim().isEmpty()) {
+                    return true; // Afficher tous les avis si la recherche est vide
+                }
+                String lowerCaseFilter = newValue.toLowerCase();
+                // Rechercher dans la description, le type, la note et la date avec vérifications null
+                String description = avisWithType.avis.getDescription() != null ? avisWithType.avis.getDescription() : "";
+                String type = avisWithType.type != null ? avisWithType.type : "";
+                //String note = String.valueOf(avisWithType.avis.getNote());
+                String date = avisWithType.avis.getDate_avis() != null ? avisWithType.avis.getDate_avis().toString() : "";
+                return description.toLowerCase().contains(lowerCaseFilter)
+                        || type.toLowerCase().contains(lowerCaseFilter)
+                        /*|| note.contains(lowerCaseFilter)*/
+                        || date.toLowerCase().contains(lowerCaseFilter);
+            });
+            avisTreeTable.refresh(); // Forcer le rafraîchissement de l'interface
+        });
+
+        // Configurer le TreeTableView avec les données filtrées
+        TreeItem<AvisWithType> root = new RecursiveTreeItem<>(filteredAvisList, RecursiveTreeObject::getChildren);
         avisTreeTable.setRoot(root);
         avisTreeTable.setShowRoot(false); // Pour ne pas afficher la racine dans le TreeTableView
-    }
-
-    // Classe interne auxiliaire pour stocker le type de réservation
-    public static class AvisWithType extends RecursiveTreeObject<AvisWithType> {
-        Avis avis;
-        String type;
-
-        AvisWithType(Avis avis, String type) {
-            this.avis = avis;
-            this.type = type;
-        }
     }
 
     // Méthode pour charger les avis avec leur type depuis la base de données
@@ -156,15 +187,13 @@ public class AfficherAvisController {
         return list;
     }
 
-
-
     private void visualiserAvis(AvisWithType avisWithType) {
         Avis avis = avisWithType.avis;
         String type = avisWithType.type; // récupérer dynamiquement le type
         openVisualiserAvisWindow(avis, type); // appel avec les 2 paramètres
     }
 
-    private void openVisualiserAvisWindow(Avis avis,String type) {
+    private void openVisualiserAvisWindow(Avis avis, String type) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/VisualiserAvis.fxml"));
             Parent root = loader.load();
@@ -173,7 +202,6 @@ public class AfficherAvisController {
             VisualiserAvisController controller = loader.getController();
             controller.setAvis(avis);
             controller.setType(type); // <--- on passe dynamiquement le type ici
-
 
             Stage stage = new Stage();
             stage.setTitle("Détails de l'Avis");
@@ -205,23 +233,10 @@ public class AfficherAvisController {
 
         } catch (IOException e) {
             e.printStackTrace();
-        }    }
-
-    private void reloadAvisData() {
-        // Recharger les données depuis la base de données
-        ObservableList<AvisWithType> updatedAvisList = loadAvisWithTypes();
-
-        // Créer une nouvelle racine pour le TreeTableView avec les nouvelles données
-        TreeItem<AvisWithType> root = new RecursiveTreeItem<>(updatedAvisList, RecursiveTreeObject::getChildren);
-
-        // Mettre à jour le TreeTableView
-        avisTreeTable.setRoot(root);
-        avisTreeTable.refresh(); // Rafraîchir la vue pour s'assurer que l'affichage est mis à jour
+        }
     }
 
-
-
-    private void supprimerAvis(AfficherAvisController.AvisWithType avisWithType) {
+    private void supprimerAvis(AvisWithType avisWithType) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation de suppression");
         alert.setHeaderText("Voulez-vous vraiment supprimer cet avis ?");
@@ -239,5 +254,11 @@ public class AfficherAvisController {
         }
     }
 
-
+    private void reloadAvisData() {
+        // Recharger les données depuis la base de données
+        ObservableList<AvisWithType> updatedAvisList = loadAvisWithTypes();
+        avisList.clear(); // Vider la liste existante
+        avisList.addAll(updatedAvisList); // Mettre à jour avec les nouvelles données
+        avisTreeTable.refresh(); // Rafraîchir la vue pour s'assurer que l'affichage est mis à jour
+    }
 }
